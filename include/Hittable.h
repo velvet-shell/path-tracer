@@ -4,22 +4,21 @@
 #include "Ray.h"
 #include "Material.h"
 
-#include <memory>
+class Hittable;
 
 struct hit_record {
   vec3 pos;
   double t;
   vec3 normal;
-  vec3 emission;
-  std::shared_ptr<Material> material;
+  const Hittable *object;
 };
 
 class Hittable {
   public:
-    Hittable(std::shared_ptr<Material> material, vec3 emission) : material(material), emission(emission) {}
-    virtual bool hit(const Ray &ray, double t_min, double t_max, hit_record& rec) const = 0;
+    Hittable(const Material *material, vec3 emission) : material(material), emission(emission) {}
+    virtual bool hit(const Ray &ray, double t_min, double t_max, hit_record &rec) const = 0;
 
   public:
-    std::shared_ptr<Material> material;
+    const Material *material;
     vec3 emission;
 };

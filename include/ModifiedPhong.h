@@ -7,8 +7,6 @@ class ModifiedPhong : public Material {
     ModifiedPhong(vec3 kd, vec3 ks, double exponent)
      : kd(kd), ks(ks), exponent(exponent) {}
     vec3 sample(vec3 output, vec3 normal, unsigned short *seed) const override;
-    double pdf(vec3 input, vec3 output, vec3 normal) const override;
-    vec3 brdf(vec3 input, vec3 output, vec3 normal) const override;
     vec3 eval(vec3 input, vec3 output, vec3 normal) const override;
   private:
     vec3 kd;
@@ -35,28 +33,11 @@ vec3 ModifiedPhong::sample(vec3 output, vec3 normal, unsigned short *seed) const
   } else {
     //sample phong
     double h = pow(r2, 1 / (exponent + 1));
-    double sin_phi = sqrt(1 - h * h); 
+    double sin_phi = sqrt(1 - h * h);
     input = vec3(sin_phi * cos(theta), sin_phi * sin(theta), h);
     input = map_coords(reflect(output, normal), input);
   }
   return input;
-}
-
-double ModifiedPhong::pdf(vec3 input, vec3 output, vec3 normal) const {
-  double p = max(kd) / (max(kd) + max(ks));
-  double s = dot(reflect(input, normal), output);
-  if (s < 0.0) {
-    s = 0.0;
-  }
-  return dot(input, normal) * M_1_PI * p + M_1_PI / 2 * (exponent + 2) * pow(s, exponent) * (1 - p);
-}
-
-vec3 ModifiedPhong::brdf(vec3 input, vec3 output, vec3 normal) const {
-  double s = dot(reflect(input, normal), output);
-  if (s < 0.0) {
-    s = 0.0;
-  }
-  return kd * M_1_PI + ks * M_1_PI / 2 * (exponent + 2) * pow(s, exponent);
 }
 
 vec3 ModifiedPhong::eval(vec3 input, vec3 output, vec3 normal) const {
