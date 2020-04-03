@@ -57,7 +57,7 @@ inline vec3 operator-(double t, const vec3 &u) {
   return vec3(t - u.x, t - u.y, t - u.z);
 }
 inline vec3 operator-(const vec3 &u, double t) {
-  return t - u;
+  return -(t - u);
 }
 inline vec3 operator/(const vec3 &u, double t) {
   return (1 / t) * u;

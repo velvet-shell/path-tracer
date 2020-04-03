@@ -13,7 +13,7 @@
 vec3 radiance(const Scene *scene, const Ray &ray, int depth, unsigned short* seed) {
   hit_record hit;
   if (!scene->hit(ray, 1e-4, 1e20, hit)) {
-    return vec3(0.25, 0.35, 0.5);
+    return vec3(0.5, 0.7, 1.0);
     // return vec3();
   }
 
@@ -69,22 +69,23 @@ int main(int argc, char* argv[]) {
 
   // scene.add(new Sphere(vec3(50,681.6-.27,81.6), 600, new Lambert(vec3()), vec3(12,12,12)));
 
-  // scene.add(new Sphere(vec3(27,16.5,47), 16.5, new Phong(vec3(0.25, 0.25, 0.25), vec3(1.00, 0.71, 0.29), 32.0), vec3()));
+  // scene.add(new Sphere(vec3(27,16.5,47), 16.5, new CookTorrance(vec3(0.95, 0.64, 0.54), 0.2), vec3()));
 
-  // scene.add(new Sphere(vec3(50,23,125), 16.5,
-  //                      new Lambert(vec3(0.5,0.04,0.04)),
-  //                      vec3()));
+
   scene.add(new Sphere(vec3(90,100,170), 16.5,
                        new Lambert(vec3(0.5,0.5,0.5)),
                        vec3(12, 12, 12)));
+  // scene.add(new Sphere(vec3(50, 56, 140), 16.5,
+  //                      new Lambert(vec3(0.5,0.5,0.5)),
+  //                      vec3(12, 12, 12)));
   scene.add(new Sphere(vec3(50,-1e5 + 6.5,125), 1e5,
-                       new Lambert(vec3(0.5,0.5,0.5)),
+                       new Phong(vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0), 256),
                        vec3()));
-  // scene.add(new Sphere(vec3(10, 23, 90), 16.5,
-  //                      new IdealSpecular(),
-  //                      vec3()));
+  scene.add(new Sphere(vec3(10, 23, 90), 16.5,
+                       new IdealSpecular(),
+                       vec3()));
   scene.add(new Sphere(vec3(50,23,140), 16.5,
-                       new CookTorrance(vec3(0.95, 0.64, 0.54), 0.5),
+                       new CookTorrance(vec3(0.95, 0.64, 0.54), 0.15),
                        vec3()));
 
   vec3* pixels = new vec3[w * h];
