@@ -9,6 +9,7 @@
 #include "CookTorrance.h"
 #include "Scene.h"
 #include "Sphere.h"
+#include "Triangle.h"
 #include "Camera.h"
 
 vec3 radiance(const Scene *scene, const Ray &ray, int depth, unsigned short* seed) {
@@ -53,7 +54,7 @@ int main(int argc, char* argv[]) {
   int samples = 1;
   if (argc == 2) samples = atoi(argv[1]) / 4;
 
-  Camera cam(vec3(5, -10, 10), vec3(0, 0, 0), vec3(0, 0, 1), M_PI / 2, (double) w / h);
+  Camera cam(vec3(0, -2, 1), vec3(0, 0, 1), vec3(0, 0, 1), M_PI / 2, (double) w / h);
 
   Scene scene;
 
@@ -80,15 +81,16 @@ int main(int argc, char* argv[]) {
   // scene.add(new Sphere(vec3(10, 23, 90), 16.5,
   //                      new IdealSpecular(),
   //                      vec3()));
-  scene.add(new Sphere(vec3(0, 0, 2), 2,
-                       new Lambert(vec3(0.5, 0.0, 0.0)),
-                       vec3()));
-  scene.add(new Sphere(vec3(5, 0, 2), 2,
-                       new Lambert(vec3(0.0, 0.0, 0.5)),
-                       vec3()));                     
+  // scene.add(new Sphere(vec3(0, 0, 2), 2,
+  //                      new Lambert(vec3(0.5, 0.0, 0.0)),
+  //                      vec3()));
+  // scene.add(new Sphere(vec3(5, 0, 2), 2,
+  //                      new Lambert(vec3(0.0, 0.0, 0.5)),
+  //                      vec3()));
+  scene.add(new Triangle(vec3(-1, 0, 1), vec3(1, 0, 1), vec3(0, 0, 2.4),
+                         new Lambert(vec3(0.0, 0.0, 0.5))));                   
   scene.add(new Sphere(vec3(0, 0, -1e5), 1e5,
-                       new Lambert(vec3(0.0, 0.5, 0.0)),
-                       vec3()));                     
+                       new Lambert(vec3(0.0, 0.5, 0.0))));                     
 
   vec3* pixels = new vec3[w * h];
   vec3 result;

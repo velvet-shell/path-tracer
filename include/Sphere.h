@@ -17,7 +17,7 @@ bool Sphere::hit(const Ray &ray, double t_min, double t_max, hit_record &rec) co
   vec3 l = center - ray.origin;
   double b = dot(l, ray.dir);
   double det = b * b - dot(l, l) + radius * radius;
-  if (det < 0) {
+  if (det < t_min) {
     return false;
   }
   det = sqrt(det);
