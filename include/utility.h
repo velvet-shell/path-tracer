@@ -2,10 +2,6 @@
 
 #include "vec3.h"
 
-inline double clamp(double x) {
-  return x < 0 ? 0 : x > 1 ? 1 : x;
-}
-
 inline vec3 reflect(const vec3 &d, const vec3 &n) {
   return 2.f * n * dot(n, d) - d;
 }
@@ -55,4 +51,21 @@ double smith_ggx(vec3 normal, vec3 input, vec3 output, double alpha) {
   double a = cos_o * sqrt(alpha * alpha + (1.0 - alpha * alpha) * cos_i * cos_i);
   double b = cos_i * sqrt(alpha * alpha + (1.0 - alpha * alpha) * cos_o * cos_o);
   return 2.0 * cos_i * cos_o / (a + b);
+}
+
+double triangle_distribution(unsigned short *seed) {
+  double r = 2 * erand48(seed);
+  if (r < 1) {
+    return sqrt(r) - 1;
+  } else {
+    return 1 - sqrt(2 - r);
+  }
+}
+
+inline double clamp(double x) {
+  return x < 0 ? 0 : x > 1 ? 1 : x;
+}
+
+inline int gamma_cor(double x) {
+  return int(pow(clamp(x), 1 / 2.2) * 255 + 0.5);
 }

@@ -1,24 +1,23 @@
 #include <iostream>
 
-#include "vec3.h"
-#include "Ray.h"
-#include "Material.h"
+#include "utility.h"
+
 #include "Lambert.h"
 #include "IdealSpecular.h"
 #include "Phong.h"
 #include "CookTorrance.h"
-#include "Scene.h"
+
 #include "Sphere.h"
 #include "Triangle.h"
+
+#include "Scene.h"
 #include "Camera.h"
 
 vec3 radiance(const Scene *scene, const Ray &ray, int depth, unsigned short* seed) {
   hit_record hit;
   if (!scene->hit(ray, 1e-4, 1e20, hit)) {
     return vec3(0.5, 0.7, 1.0);
-    // return vec3();
   }
-
   vec3 wo = normalize(-ray.dir);
   hit.normal = dot(hit.normal, ray.dir) < 0 ? hit.normal : -hit.normal;
 
@@ -36,19 +35,6 @@ vec3 radiance(const Scene *scene, const Ray &ray, int depth, unsigned short* see
   return hit.object->emission + attenuation * radiance(scene, Ray(hit.pos, wi), depth + 1, seed);
 }
 
-double triangle_distribution(unsigned short *seed) {
-  double r = 2 * erand48(seed);
-  if (r < 1) {
-    return sqrt(r) - 1;
-  } else {
-    return 1 - sqrt(2 - r);
-  }
-}
-
-inline int toInt(double x) {
-  return int(pow(clamp(x), 1 / 2.2) * 255 + 0.5);
-}
-
 int main(int argc, char* argv[]) {
   int w = 512, h = 512;
   int samples = 1;
@@ -58,35 +44,6 @@ int main(int argc, char* argv[]) {
 
   Scene scene;
 
-  // scene.add(new Sphere(vec3(50, 1e5, 81.6), 1e5, new Lambert(vec3(0.75, 0.75, 0.75)), vec3()));
-  // scene.add(new Sphere(vec3(50,-1e5+81.6,81.6), 1e5, new Lambert(vec3(0.75, 0.75, 0.75)), vec3()));
-
-  // scene.add(new Sphere(vec3(50,40.8, 1e5), 1e5, new Lambert(vec3(0.75, 0.75, 0.75)), vec3()));
-  // scene.add(new Sphere(vec3(50,40.8,-1e5+170), 1e5, new Lambert(vec3()), vec3()));
-
-  // scene.add(new Sphere(vec3(1e5+1,40.8,81.6), 1e5, new Lambert(vec3(.75,.25,.25)), vec3()));
-  // scene.add(new Sphere(vec3(-1e5+99,40.8,81.6), 1e5, new Lambert(vec3(.25,.25,.75)), vec3()));
-
-  // scene.add(new Sphere(vec3(50,681.6-.27,81.6), 600, new Lambert(vec3()), vec3(12,12,12)));
-
-  // scene.add(new Sphere(vec3(27,16.5,47), 16.5, new CookTorrance(vec3(0.95, 0.64, 0.54), 0.2), vec3()));
-
-
-  // scene.add(new Sphere(vec3(90,100,170), 16.5,
-  //                      new Lambert(vec3(0.5,0.5,0.5)),
-  //                      vec3(12, 12, 12)));
-  // scene.add(new Sphere(vec3(50,-1e5 + 6.5,125), 1e5,
-  //                      new Phong(vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0), 256),
-  //                      vec3()));
-  // scene.add(new Sphere(vec3(10, 23, 90), 16.5,
-  //                      new IdealSpecular(),
-  //                      vec3()));
-  // scene.add(new Sphere(vec3(0, 0, 2), 2,
-  //                      new Lambert(vec3(0.5, 0.0, 0.0)),
-  //                      vec3()));
-  // scene.add(new Sphere(vec3(5, 0, 2), 2,
-  //                      new Lambert(vec3(0.0, 0.0, 0.5)),
-  //                      vec3()));
   scene.add(new Triangle(vec3(-1, 0, 1), vec3(1, 0, 1), vec3(0, 0, 2.4),
                          new Lambert(vec3(0.0, 0.0, 0.5))));                   
   scene.add(new Sphere(vec3(0, 0, -1e5), 1e5,
@@ -118,6 +75,6 @@ int main(int argc, char* argv[]) {
   FILE *f = fopen("image.ppm", "w");
 	fprintf(f, "P3\n%d %d\n%d\n", w, h, 255);
 	for (int i = 0; i < w * h; i++) {
-		fprintf(f, "%d %d %d ", toInt(pixels[i].x), toInt(pixels[i].y), toInt(pixels[i].z));
+		fprintf(f, "%d %d %d ", gamma_cor(pixels[i].x), gamma_cor(pixels[i].y), gamma_cor(pixels[i].z));
   }
 }

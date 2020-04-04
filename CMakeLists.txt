@@ -23,4 +23,4 @@ enable_cxx_compiler_flag_if_supported("-fopenmp")
 
 include_directories(include)
 
-add_executable(rt src/main.cpp)
+add_executable(rt src/main.cpp src/stb_image.cpp)
