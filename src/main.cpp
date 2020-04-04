@@ -9,6 +9,7 @@
 #include "CookTorrance.h"
 #include "Scene.h"
 #include "Sphere.h"
+#include "Camera.h"
 
 vec3 radiance(const Scene *scene, const Ray &ray, int depth, unsigned short* seed) {
   hit_record hit;
@@ -52,9 +53,7 @@ int main(int argc, char* argv[]) {
   int samples = 1;
   if (argc == 2) samples = atoi(argv[1]) / 4;
 
-  Ray cam(vec3(50, 48, 295.6), normalize(vec3(0, -0.042612, -1)));
-  vec3 cx = vec3(w * 0.5135 / h, 0, 0);
-  vec3 cy = normalize(cross(cx, cam.dir)) * 0.5135;
+  Camera cam(vec3(5, -10, 10), vec3(0, 0, 0), vec3(0, 0, 1), M_PI / 2, (double) w / h);
 
   Scene scene;
 
@@ -72,21 +71,24 @@ int main(int argc, char* argv[]) {
   // scene.add(new Sphere(vec3(27,16.5,47), 16.5, new CookTorrance(vec3(0.95, 0.64, 0.54), 0.2), vec3()));
 
 
-  scene.add(new Sphere(vec3(90,100,170), 16.5,
-                       new Lambert(vec3(0.5,0.5,0.5)),
-                       vec3(12, 12, 12)));
-  // scene.add(new Sphere(vec3(50, 56, 140), 16.5,
+  // scene.add(new Sphere(vec3(90,100,170), 16.5,
   //                      new Lambert(vec3(0.5,0.5,0.5)),
   //                      vec3(12, 12, 12)));
-  scene.add(new Sphere(vec3(50,-1e5 + 6.5,125), 1e5,
-                       new Phong(vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0), 256),
+  // scene.add(new Sphere(vec3(50,-1e5 + 6.5,125), 1e5,
+  //                      new Phong(vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0), 256),
+  //                      vec3()));
+  // scene.add(new Sphere(vec3(10, 23, 90), 16.5,
+  //                      new IdealSpecular(),
+  //                      vec3()));
+  scene.add(new Sphere(vec3(0, 0, 2), 2,
+                       new Lambert(vec3(0.5, 0.0, 0.0)),
                        vec3()));
-  scene.add(new Sphere(vec3(10, 23, 90), 16.5,
-                       new IdealSpecular(),
-                       vec3()));
-  scene.add(new Sphere(vec3(50,23,140), 16.5,
-                       new CookTorrance(vec3(0.95, 0.64, 0.54), 0.15),
-                       vec3()));
+  scene.add(new Sphere(vec3(5, 0, 2), 2,
+                       new Lambert(vec3(0.0, 0.0, 0.5)),
+                       vec3()));                     
+  scene.add(new Sphere(vec3(0, 0, -1e5), 1e5,
+                       new Lambert(vec3(0.0, 0.5, 0.0)),
+                       vec3()));                     
 
   vec3* pixels = new vec3[w * h];
   vec3 result;
@@ -101,9 +103,7 @@ int main(int argc, char* argv[]) {
           for (int s = 0; s < samples; s++) {
             double dx = triangle_distribution(seed);
             double dy = triangle_distribution(seed);
-            vec3 d = cx * (((sx + 0.5 + dx) / 2 + col) / w - 0.5) +
-                    cy * (((sy + 0.5 + dy) / 2 + row) / h - 0.5) + cam.dir;
-            Ray ray(cam.origin + (d * 140), normalize(d));
+            Ray ray = cam.get_ray(((sx + 0.5 + dx) / 2 + col) / w, ((sy + 0.5 + dy) / 2 + row) / h);
             result = result + radiance(&scene, ray, 0, seed);
           }
           result /= samples;
