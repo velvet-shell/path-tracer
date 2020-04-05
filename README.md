@@ -1,19 +1,38 @@
-# Path Tracing
-Monte-Carlo path tracing image rendering
+# Задание лаборатории компьютерной графики ВМК. Трассировка путей.
 
+В основе лежит алгоритм наивной трассировки путей с терминацией
+с помощью русской рулетки.
 
-### TODO:
+## Реализованные материалы:
 
-* Explicit light sampling
-* Lens and depth of field support for realistic pictures
+* Ламбертовская диффузная поверхность (выборка по значимости из косинуса)
+* Зеркало (вырожденная BRDF)
+* Стекло (русская рулетка и преломление на основе формул Френеля)
+* Исправленная модель Фонга (выборка по значимости из косинуса в степени,
+BRDF нормализована согласно оригинальной статье 1994, совмещена с диффузной моделью с помощью русской рулетки)
+* Модель отражающих микрограней Кука-Торренса (выборка по значимости из GGX)
 
-### Implemented features:
+## Дополнительно:
 
-* Positionable camera class
-* Sphere, plane and triangle primitives
-* Textures and spherical environment map
-* Glass and mirror materials
-* Lambertian BRDF (importance sampling cosine)
-* Modified Phong BRDF (normalized according to Lafortune and Williams 1994, importance sampling powered cosine)
-* Microfacet Cook Torrance BRDF (importance sampling GGX NDF, uncorrelated Smith+GGX masking-shadowing function)
-* SSAO via tent filter (based on smallpt implementation: inverse transform sampling random values from filter)
+* Трассировка путей
+* Примитивы: сфера, треугольник, плоскость
+* Поддержка текстур (на сфере и замощение плоскости)
+* Сферическая карта окружения
+* SSAO анти-алиасинг из 4-х субпикселей с генерацией случайных отклонений на основе тент-фильтра
+* Гамма-коррекция
+* В качестве источников света выступают объекты с площадью
+* Многопоточность с помощью директив pragma
+
+## Изученные материалы:
+* Игнатенко А. В., Фролов В. А. Основы синтеза фотореалистичных изображений
+* Peter Shirley Ray Tracing in One Weekend
+* https://agraphicsguy.wordpress.com/2015/11/01/sampling-microfacet-brdf/
+* http://graphicrants.blogspot.com/2013/08/specular-brdf-reference.html
+* https://schuttejoe.github.io/post/ggximportancesamplingpart1/
+
+Вдохновлено минималистичным трассировщиком https://www.kevinbeason.com/smallpt/
+
+## Производительность:
+Сцены протестированы на Ryzen 7 2700 и укладываются в минуту на 12 потоках.
+
+(В первой сцене используется достаточно тяжелое изображение для карты окружения, подгрузка которого ощутимо отнимает время)
