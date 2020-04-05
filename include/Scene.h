@@ -8,21 +8,30 @@
 class Envmap : public Sphere {
   public:
     Envmap(const Texture *texture) : texture(texture), Sphere(vec3(), 1e20) {}
-    const Texture *texture;
+    
+    const Texture *texture = nullptr;
 };
 
 class Scene {
   public:
     Scene() {}
 
-    void add(const Hittable *object) { objects.push_back(object); }
-    void add(const Envmap *map) { envmap = map; }
+    void add(const Hittable *object);
+    void add(const Envmap *map);
     bool hit(const Ray &ray, double t_min, double t_max, hit_record &rec) const;
     vec3 get_background(const Ray &ray) const;
   private:
     std::vector<const Hittable *> objects;
-    const Envmap *envmap;
+    const Envmap *envmap = nullptr;
 };
+
+void Scene::add(const Hittable *object) {
+  objects.push_back(object);
+}
+
+void Scene::add(const Envmap *map) {
+  envmap = map;
+}
 
 bool Scene::hit(const Ray &ray, double t_min, double t_max, hit_record &rec) const {
   double closest = t_max;

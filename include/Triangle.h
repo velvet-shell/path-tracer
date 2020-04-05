@@ -8,6 +8,7 @@ class Triangle: public Hittable {
       : v0(v0), v1(v1), v2(v2), Hittable(material, emission) {}
     
     bool hit(const Ray &ray, double t_min, double t_max, hit_record& rec) const override;
+    void get_tex_coords(const vec3 &pos, double &u, double &v) const override;
   private:
     vec3 v0, v1, v2;
 };
@@ -18,17 +19,17 @@ bool Triangle::hit(const Ray &ray, double t_min, double t_max, hit_record &rec) 
   vec3 pvec = cross(ray.dir, e2);
   double det = dot(e1, pvec);
 
-  if (det < t_min && det > -t_min) {
+  if (det < 1e-6 && det > -1e-6) {
       return false;
   }
   vec3 tvec = ray.origin - v0;
   double u = dot(tvec, pvec) / det;
-  if (u < t_min || u - 1 > t_min) {
+  if (u < 1e-6 || u - 1 > 1e-6) {
       return false;
   }
   vec3 qvec = cross(tvec, e1);
   double v = dot(ray.dir, qvec) / det;
-  if (v < t_min || u + v - 1 > t_min) {
+  if (v < 1e-6 || u + v - 1 > 1e-6) {
       return false;
   }
   double tmp = dot(e2, qvec) / det;
@@ -40,4 +41,8 @@ bool Triangle::hit(const Ray &ray, double t_min, double t_max, hit_record &rec) 
     return true;
   }
   return false;
+}
+
+void Triangle::get_tex_coords(const vec3 &pos, double &u, double &v) const {
+  
 }

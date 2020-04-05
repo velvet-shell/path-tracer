@@ -10,13 +10,14 @@
 
 #include "Sphere.h"
 #include "Triangle.h"
+#include "Plane.h"
 
 #include "Scene.h"
 #include "Camera.h"
 
 vec3 radiance(const Scene *scene, const Ray &ray, int depth, unsigned short* seed) {
   hit_record hit;
-  if (!scene->hit(ray, 1e-4, 1e20, hit)) {
+  if (!scene->hit(ray, 1e-4, 1e10, hit)) {
     return scene->get_background(ray);
   }
   if (max(hit.object->emission) > 1e-4) {
@@ -44,19 +45,21 @@ int main(int argc, char* argv[]) {
   int samples = 1;
   if (argc == 2) samples = atoi(argv[1]) / 4;
 
-  Camera cam(vec3(-10, 10, 0), vec3(0, 0, 0), vec3(0, 0, 1), M_PI / 2, (double) w / h);
+  Camera cam(vec3(-67.5, -67.5, 30), vec3(0, 0, 0), vec3(0, 0, 1), M_PI / 2, (double) w / h);
 
   Scene scene;
 
   int map_width, map_height, nrChannels;
   float *map = stbi_loadf("textures/pier.jpg", &map_width, &map_height, &nrChannels, 0);
+
+  int floor_width, floor_height;
+  float *floor = stbi_loadf("textures/wood.png", &floor_width, &floor_height, &nrChannels, 0);
   
   scene.add(new Envmap(new Texture(map, map_width, map_height)));
-
-  // scene.add(new Sphere(vec3(0, 0, 0), 5, new CookTorrance(vec3(1.00, 0.86, 0.57), 0.2)));
-  // scene.add(new Sphere(vec3(0, 0, 0), 5, new IdealSpecular()));
-  scene.add(new Sphere(vec3(0, 0, 0), 5, new Phong(vec3(0.5, 0.2, 0.2), vec3(0.5, 0.2, 0.2), 128)));
-  scene.add(new Sphere(vec3(-15, 0, 15), 5, new Lambert(vec3(0.5, 0.5, 0.5)), vec3(12, 12, 12)));
+  scene.add(new Sphere(vec3(0, 500, 500), 100, new Lambert(vec3()), vec3(30, 30, 30)));
+  scene.add(new Sphere(vec3(-22.5, -52.5, 15), 15, new CookTorrance(vec3(1.00, 0.86, 0.57), 0.2)));
+  scene.add(new Sphere(vec3(-45, 0, 15), 15, new IdealSpecular()));
+  scene.add(new Plane(vec3(0, 0, 0), vec3(0, 0, 1), new Lambert(new Texture(floor, floor_width, floor_height))));
 
   vec3* pixels = new vec3[w * h];
   vec3 result;
