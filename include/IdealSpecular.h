@@ -9,6 +9,6 @@ class IdealSpecular : public Material {
 };
 
 vec3 IdealSpecular::sample(vec3 output, vec3 norm_dir, const hit_record *rec, unsigned short *seed, vec3 &attenuation) const {
-  attenuation = vec3(1.0);
+  attenuation = vec3(0.9);
   return reflect(output, norm_dir);
 }

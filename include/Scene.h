@@ -46,6 +46,9 @@ bool Scene::hit(const Ray &ray, double t_min, double t_max, hit_record &rec) con
 }
 
 vec3 Scene::get_background(const Ray &ray) const {
+  if (envmap == nullptr) {
+    return vec3();
+  }
   hit_record rec;
   envmap->hit(ray, 0, 1e21, rec);
   return envmap->texture->get_texture(rec.u, rec.v);
