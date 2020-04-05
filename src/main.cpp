@@ -19,6 +19,9 @@ vec3 radiance(const Scene *scene, const Ray &ray, int depth, unsigned short* see
   if (!scene->hit(ray, 1e-4, 1e20, hit)) {
     return scene->get_background(ray);
   }
+  if (max(hit.object->emission) > 1e-4) {
+    return hit.object->emission;
+  }
   vec3 wo = normalize(-ray.dir);
   hit.normal = dot(hit.normal, ray.dir) < 0 ? hit.normal : -hit.normal;
 
@@ -46,11 +49,14 @@ int main(int argc, char* argv[]) {
   Scene scene;
 
   int map_width, map_height, nrChannels;
-  unsigned char *map = stbi_load("textures/pier.jpg", &map_width, &map_height, &nrChannels, 0);
+  float *map = stbi_loadf("textures/pier.jpg", &map_width, &map_height, &nrChannels, 0);
   
   scene.add(new Envmap(new Texture(map, map_width, map_height)));
 
-  scene.add(new Sphere(vec3(0, 0, 0), 5, new CookTorrance(vec3(0.98, 0.82, 0.76), 0.05)));
+  // scene.add(new Sphere(vec3(0, 0, 0), 5, new CookTorrance(vec3(1.00, 0.86, 0.57), 0.2)));
+  // scene.add(new Sphere(vec3(0, 0, 0), 5, new IdealSpecular()));
+  scene.add(new Sphere(vec3(0, 0, 0), 5, new Phong(vec3(0.5, 0.2, 0.2), vec3(0.5, 0.2, 0.2), 128)));
+  scene.add(new Sphere(vec3(-15, 0, 15), 5, new Lambert(vec3(0.5, 0.5, 0.5)), vec3(12, 12, 12)));
 
   vec3* pixels = new vec3[w * h];
   vec3 result;

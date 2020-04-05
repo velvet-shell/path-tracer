@@ -4,14 +4,14 @@
 
 class Texture {
   public:
-    Texture(unsigned char *data, int data_width, int data_height)
+    Texture(float *data, int data_width, int data_height)
      : data(data), data_width(data_width), data_height(data_height) {}
     ~Texture() {
       delete data;
     }
     vec3 get_texture(double u, double v) const;
   private:
-    unsigned char *data;
+    float *data;
     int data_width, data_height;
 };
 
@@ -27,9 +27,9 @@ vec3 Texture::get_texture(double u, double v) const {
   if (i > data_width - 1)  i = data_width - 1;
   if (j > data_height - 1) j = data_height - 1;
 
-  auto r = data[3 * i + 3 * data_width * j + 0] / 255.0;
-  auto g = data[3 * i + 3 * data_width * j + 1] / 255.0;
-  auto b = data[3 * i + 3 * data_width * j + 2] / 255.0;
+  auto r = data[3 * i + 3 * data_width * j + 0];
+  auto g = data[3 * i + 3 * data_width * j + 1];
+  auto b = data[3 * i + 3 * data_width * j + 2];
 
   return vec3(r, g, b);
 }
