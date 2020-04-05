@@ -14,7 +14,7 @@ class CookTorrance : public Material {
 
 vec3 CookTorrance::sample(vec3 output, const hit_record *rec, unsigned short *seed, vec3 &attenuation) const {
   vec3 normal = rec->normal;
-  vec3 half = sample_ggx(output, roughness, seed);
+  vec3 half = sample_ggx(normal, roughness, seed);
   vec3 input = reflect(output, half);
   if (dot(normal, input) > 0.0 && dot(input, half) > 0.0) {
     vec3 fresnel = fresnel_schlick(ks, dot(half, input));

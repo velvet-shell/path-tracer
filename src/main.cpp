@@ -14,12 +14,10 @@
 #include "Scene.h"
 #include "Camera.h"
 
-
 vec3 radiance(const Scene *scene, const Ray &ray, int depth, unsigned short* seed) {
   hit_record hit;
   if (!scene->hit(ray, 1e-4, 1e20, hit)) {
     return scene->get_background(ray);
-    // return vec3(0.5, 0.7, 1.0);
   }
   vec3 wo = normalize(-ray.dir);
   hit.normal = dot(hit.normal, ray.dir) < 0 ? hit.normal : -hit.normal;
@@ -43,13 +41,16 @@ int main(int argc, char* argv[]) {
   int samples = 1;
   if (argc == 2) samples = atoi(argv[1]) / 4;
 
-  Camera cam(vec3(-0.1, 0.2, 0), vec3(0, 0, 0), vec3(0, 0, 1), M_PI / 2, (double) w / h);
+  Camera cam(vec3(-10, 10, 0), vec3(0, 0, 0), vec3(0, 0, 1), M_PI / 2, (double) w / h);
 
   Scene scene;
 
   int map_width, map_height, nrChannels;
   unsigned char *map = stbi_load("textures/pier.jpg", &map_width, &map_height, &nrChannels, 0);
+  
   scene.add(new Envmap(new Texture(map, map_width, map_height)));
+
+  scene.add(new Sphere(vec3(0, 0, 0), 5, new CookTorrance(vec3(0.98, 0.82, 0.76), 0.05)));
 
   vec3* pixels = new vec3[w * h];
   vec3 result;
