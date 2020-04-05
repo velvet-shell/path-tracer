@@ -68,7 +68,6 @@ void render(Camera cam, Scene scene, int samples, int w, int h) {
       }
     }
   }
-  fprintf(stderr, "\nDone!\n");
   FILE *f = fopen(out_file.c_str(), "w");
 	fprintf(f, "P3\n%d %d\n%d\n", w, h, 255);
 	for (int i = 0; i < w * h; i++) {
@@ -108,14 +107,21 @@ void box_scene() {
   scene.add(new Plane(vec3(-20, 0, 0), vec3(1, 0, 0),  new Lambert(vec3(0.75, 0.25, 0.25))));
   scene.add(new Plane(vec3(0, 0, -20), vec3(0, 0, 1),  new Lambert(vec3(0.75, 0.75, 0.75))));
   scene.add(new Plane(vec3(0, 0, 20),  vec3(0, 0, -1), new Lambert(vec3(0.75, 0.75, 0.75))));
-  scene.add(new Triangle(vec3(4, -5, 18),  vec3(4, 5, 18),  vec3(6, 5, 20),  new Lambert(vec3()), vec3(12, 12, 12)));
-  scene.add(new Triangle(vec3(2, -5, 20),  vec3(2, 5, 20),  vec3(4, 5, 18),  new Lambert(vec3()), vec3(12, 12, 12)));
-  scene.add(new Triangle(vec3(2, -5, 20),  vec3(2, 5, 20),  vec3(0, 5, 18),  new Lambert(vec3()), vec3(12, 12, 12)));
-  scene.add(new Triangle(vec3(-2, -5, 20), vec3(-2, 5, 20), vec3(-4, 5, 18), new Lambert(vec3()), vec3(12, 12, 12)));
-  scene.add(new Triangle(vec3(-2, -5, 20), vec3(-2, 5, 20), vec3(0, 5, 18),  new Lambert(vec3()), vec3(12, 12, 12)));
-  scene.add(new Triangle(vec3(-4, -5, 18), vec3(-4, 5, 18), vec3(-6, 5, 20), new Lambert(vec3()), vec3(12, 12, 12)));
-  scene.add(new Sphere(vec3(15, 15, -15), 5, new Phong(vec3(0.7, 0.2, 0.2), vec3(0.7, 0.2, 0.2), 32)));
-  scene.add(new Sphere(vec3(-13, 13, -13), 7, new Lambert(vec3(0.25, 0.25, 0.75))));
+  scene.add(new Triangle(vec3(4, -5, 18),  vec3(4, 5, 18),   vec3(6, 5, 20),  new Lambert(vec3()), vec3(12, 12, 12)));
+  scene.add(new Triangle(vec3(2, -5, 20),  vec3(2, 5, 20),   vec3(4, 5, 18),  new Lambert(vec3()), vec3(12, 12, 12)));
+  scene.add(new Triangle(vec3(2, -5, 20),  vec3(2, 5, 20),   vec3(0, 5, 18),  new Lambert(vec3()), vec3(12, 12, 12)));
+  scene.add(new Triangle(vec3(-2, -5, 20), vec3(-2, 5, 20),  vec3(0, 5, 18),  new Lambert(vec3()), vec3(12, 12, 12)));
+  scene.add(new Triangle(vec3(-2, -5, 20), vec3(-2, 5, 20),  vec3(-4, 5, 18), new Lambert(vec3()), vec3(12, 12, 12)));
+  scene.add(new Triangle(vec3(-4, -5, 18), vec3(-4, 5, 18),  vec3(-6, 5, 20), new Lambert(vec3()), vec3(12, 12, 12)));
+  scene.add(new Triangle(vec3(2, -5, 20),  vec3(0, -5, 18),  vec3(0, 5, 18),  new Lambert(vec3()), vec3(12, 12, 12)));
+  scene.add(new Triangle(vec3(-2, -5, 20), vec3(0, -5, 18),  vec3(0, 5, 18),  new Lambert(vec3()), vec3(12, 12, 12)));
+  scene.add(new Triangle(vec3(-2, -5, 20), vec3(-4, -5, 18), vec3(-4, 5, 18), new Lambert(vec3()), vec3(12, 12, 12)));
+  scene.add(new Triangle(vec3(-4, -5, 18), vec3(-6, -5, 20), vec3(-6, 5, 20), new Lambert(vec3()), vec3(12, 12, 12)));
+  scene.add(new Triangle(vec3(4, -5, 18),  vec3(6, -5, 20),  vec3(6, 5, 20),  new Lambert(vec3()), vec3(12, 12, 12)));
+  scene.add(new Triangle(vec3(2, -5, 20),  vec3(4, -5, 18),  vec3(4, 5, 18),  new Lambert(vec3()), vec3(12, 12, 12)));
+  scene.add(new Sphere(vec3(15, 15, -15),  5, new Phong(vec3(0.7, 0.2, 0.2), vec3(0.7, 0.2, 0.2), 32)));
+  scene.add(new Sphere(vec3(-13, 13, -13), 7, new IdealSpecular()));
+  scene.add(new Sphere(vec3(1, 4, 0), 7, new Dielectric()));
   render(cam, scene, 250, w, h);
 }
 
