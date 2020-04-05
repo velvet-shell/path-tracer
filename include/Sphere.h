@@ -4,6 +4,7 @@
 
 class Sphere : public Hittable {
   public:
+    Sphere(vec3 center, double radius) : center(center), radius(radius), Hittable() {}
     Sphere(vec3 center, double radius, const Material *material, vec3 emission = vec3())
       : center(center), radius(radius), Hittable(material, emission) {}
 
