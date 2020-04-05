@@ -6,15 +6,15 @@ class Phong : public Material {
   public:
     Phong(vec3 kd, vec3 ks, double exponent)
      : kd(kd), ks(ks), exponent(exponent) {}
-    vec3 sample(vec3 output, const hit_record *rec, unsigned short *seed, vec3 &attenuation) const override;
+    vec3 sample(vec3 output, vec3 norm_dir, const hit_record *rec, unsigned short *seed, vec3 &attenuation) const override;
   private:
     vec3 kd;
     vec3 ks;
     double exponent;
 };
 
-vec3 Phong::sample(vec3 output, const hit_record *rec, unsigned short *seed, vec3 &attenuation) const {
-  vec3 normal = rec->normal;
+vec3 Phong::sample(vec3 output, vec3 norm_dir, const hit_record *rec, unsigned short *seed, vec3 &attenuation) const {
+  vec3 normal = norm_dir;
   double pd = max(kd);
   double ps = max(ks);
   double p = pd / (pd + ps);

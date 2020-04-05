@@ -5,6 +5,7 @@
 
 #include "Lambert.h"
 #include "IdealSpecular.h"
+#include "Dielectric.h"
 #include "Phong.h"
 #include "CookTorrance.h"
 
@@ -24,10 +25,10 @@ vec3 radiance(const Scene *scene, const Ray &ray, int depth, unsigned short* see
     return hit.object->emission;
   }
   vec3 wo = normalize(-ray.dir);
-  hit.normal = dot(hit.normal, ray.dir) < 0 ? hit.normal : -hit.normal;
+  vec3 norm_dir = dot(hit.normal, ray.dir) < 0 ? hit.normal : -hit.normal;
 
   vec3 wi, attenuation;
-  wi = hit.object->material->sample(wo, &hit, seed, attenuation);
+  wi = hit.object->material->sample(wo, norm_dir, &hit, seed, attenuation);
 
   double p = max(attenuation);
   if (depth > 5 || !p) {
@@ -57,8 +58,8 @@ int main(int argc, char* argv[]) {
   
   scene.add(new Envmap(new Texture(map, map_width, map_height)));
   scene.add(new Sphere(vec3(0, 500, 500), 100, new Lambert(vec3()), vec3(30, 30, 30)));
-  scene.add(new Sphere(vec3(-22.5, -52.5, 15), 15, new CookTorrance(vec3(1.00, 0.86, 0.57), 0.2)));
-  scene.add(new Sphere(vec3(-45, 0, 15), 15, new IdealSpecular()));
+  scene.add(new Sphere(vec3(-22.5, -52.5, 15), 15, new CookTorrance(vec3(1.00, 0.86, 0.57), 0.1)));
+  scene.add(new Sphere(vec3(-45, 0, 15), 15, new Dielectric()));
   scene.add(new Plane(vec3(0, 0, 0), vec3(0, 0, 1), new Lambert(new Texture(floor, floor_width, floor_height))));
 
   vec3* pixels = new vec3[w * h];

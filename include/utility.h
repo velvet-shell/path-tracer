@@ -17,6 +17,9 @@ inline vec3 reflect(const vec3 &d, const vec3 &n) {
 inline vec3 fresnel_schlick(vec3 r, double radians) {
   return r + (1.0 - r) * pow(1.0 - radians, 5.0);
 }
+inline double fresnel_schlick(double r, double radians) {
+  return r + (1.0 - r) * pow(1.0 - radians, 5.0);
+}
 
 vec3 map_coords(vec3 axis, vec3 sample) {
   vec3 w = fabs(axis.x) > 0.99 ? vec3(0, 1, 0) : vec3(1, 0, 0);

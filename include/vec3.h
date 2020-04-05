@@ -6,6 +6,7 @@ class vec3 {
   public:
     vec3() : x(0), y(0), z(0) {}
     vec3(double x, double y, double z) : x(x), y(y), z(z) {}
+    vec3(double x) : x(x), y(x), z(x) {}
     
     vec3 operator-() const {
       return vec3(-x, -y, -z);

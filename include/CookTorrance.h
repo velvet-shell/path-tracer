@@ -6,14 +6,14 @@ class CookTorrance : public Material {
   public:
     CookTorrance(vec3 ks, double roughness)
      : ks(ks), roughness(roughness) {}
-    vec3 sample(vec3 output, const hit_record *rec, unsigned short *seed, vec3 &attenuation) const override;
+    vec3 sample(vec3 output, vec3 norm_dir, const hit_record *rec, unsigned short *seed, vec3 &attenuation) const override;
   private:
     vec3 ks;
     double roughness;
 };
 
-vec3 CookTorrance::sample(vec3 output, const hit_record *rec, unsigned short *seed, vec3 &attenuation) const {
-  vec3 normal = rec->normal;
+vec3 CookTorrance::sample(vec3 output, vec3 norm_dir, const hit_record *rec, unsigned short *seed, vec3 &attenuation) const {
+  vec3 normal = norm_dir;
   vec3 half = sample_ggx(normal, roughness, seed);
   vec3 input = reflect(output, half);
   if (dot(normal, input) > 0.0 && dot(input, half) > 0.0) {
